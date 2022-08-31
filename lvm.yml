@@ -1,0 +1,39 @@
+---
+ - name: Setup LVM
+   hosts: rhel8
+   tasks:
+     - name: Check for databin VG
+       fail:
+         msg: VG databin does not exist
+       when:
+         - ansible_lvm['vgs']['research'] is not defined
+
+     - name: Create LVM and Filesystem and Mount
+       block:
+         - name: Check for databin VG Size of 2500MiB
+           fail:
+             msg: Could not create LV with 2500MiB size
+           when:
+             - ansible_lvm['vgs']['research']['size_g'] < "1.5"
+         - name: Create 2500MiB LVM on databin VG
+           lvol:
+              lv: data
+              vg: research
+              size: "1500"
+       rescue:
+         - name: Fall back and Create 1024MiB LVM on databin VG
+           lvol:
+             size: "800"
+             vg: research
+             lv: data
+       always:
+         - name: Set Filesystem
+           filesystem:
+             dev: /dev/research/data
+             fstype: ext4
+         - name: Mount LV 
+           mount:
+             path: /db
+             src: /dev/research/data
+             fstype: ext4
+             state: present

@@ -1,0 +1,19 @@
+---
+- name: HW report
+  hosts: test
+  tasks:
+  - name: copy form
+    copy:
+      src:  hwreport.empty
+      dest:  /root/hwreportnew.txt
+  - name: update /root/hwreport.txt file
+    lineinfile:
+      path: /root/hwreportnew.txt
+      regexp: '^{{ item.key }}'
+      line: '{{ item.value }}'
+    loop:
+      - {  key: 'HOST', value: 'HOST={{ inventory_hostname }}' } 
+      - {  key: 'MEMORY', value: 'MEMORY={{ ansible_memtotal_mb }}' } 
+      - {  key: 'BIOS', value: 'BIOS={{ ansible_bios_version }}' } 
+      - {  key: 'VDA_DISK_SIZE', value: '{%if ansible_devices.sda is defined%}VDA_DISK_SIZE={{ ansible_devices.sda.size}} {%else%}VDA_DISK_SIZE=NONE{%endif%}'  } 
+      - {  key: 'VDB_DISK_SIZE', value: '{%if ansible_devices.sdd is defined%}VDA_DISK_SIZE={{ ansible_devices.sdd.size}} {%else%}VDA_DISK_SIZE=NONE{%endif%}'  } 

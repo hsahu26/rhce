@@ -1,0 +1,10 @@
+---
+- name: time
+  hosts: prod
+  vars:
+    timesync_ntp_servers:
+      - hostname: classroom.example.com 
+        iburst: yes
+  roles:
+    - rhel-system-roles.timesync
+

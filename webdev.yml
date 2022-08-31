@@ -1,0 +1,27 @@
+---
+- hosts: rhel8
+  tasks:
+  - name: 
+    file:
+      path: /webdev
+      state: directory
+      owner: apache
+      group: apache
+      mode: 2775
+  - name: create symblic link
+    file: 
+      src: /webdev
+      dest: /var/www/html/webdev
+      state: link
+
+  - name: create index.html
+    copy:
+      dest: /webdev/index.html
+      content: "This is test"
+  - name: Allow Selinu
+    sefcontext:
+      target: '/webdev/(/.*)'
+      settype: httpd_sys_content_t
+      state: present
+  - name: resore
+    shell: restorecon -vR /webdev

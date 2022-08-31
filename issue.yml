@@ -1,0 +1,4 @@
+---
+0 hosts: all
+  tasks:
+  - name

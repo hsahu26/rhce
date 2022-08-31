@@ -1,0 +1,32 @@
+---
+- name: create uses 
+  hosts: all
+  vars_files:
+     - user_list.yml
+     - locker.yml     
+  tasks:
+  - name: 
+    group:
+      name: devops
+    when: ('dev' in group_names ) 
+  - name: 
+    group:
+      name: opsmgr
+    when: ('prod' in group_names )
+  - name: create users whose have developer job on dev group with devops membership
+    user:
+      name: "{{ item.username }}"
+      state: present
+      groups: devops
+      password: "{{ pw_developer | password_hash('sha512', 'salt')}}"
+    when: ('dev' in group_names) and ('developer' in item.job) 
+    loop: "{{ users }}"
+  - name: create users whose have manager job on prod group with devops membership
+    user:
+      name: "{{ item.username }}"
+      state: present
+      groups: opsmgr
+      update_password: always
+      password:  "{{ pw_manager | password_hash('sha512', 'salt1') }}"
+    when: ('prod' in group_names) and ('manager' in item.job) 
+    loop: "{{ users }}"

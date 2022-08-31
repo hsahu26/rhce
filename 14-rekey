@@ -1,0 +1,4 @@
+wget http://content.example.com/ex294/salaries.yml
+mv salaries.yml  /home/devops/ansible/salaries.yml
+
+ansible-vault rekey salaries.yml

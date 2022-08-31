@@ -1,0 +1,24 @@
+---
+- name: First play Install packages
+  hosts: test:host
+  tasks:
+  - name: install php and mysql
+    yum:
+      list:
+        - php
+        - mysql
+      #state: present
+- name: Second Play for group install on dev host group  
+  hosts: dev
+  tasks:
+  - name: install the 'Gnome desktop' environment group
+    yum:
+      list: "@^Xfce"
+      #state: present
+- name: third play to update all dev hosts
+  hosts: dev
+  tasks:
+  - name: Update all   
+    yum:
+      name: "*"
+      state: latest

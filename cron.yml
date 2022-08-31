@@ -1,0 +1,9 @@
+---
+- hosts: rhel8
+  tasks:
+  - name: Creates a cron file under /etc/cron.d
+    cron:
+      name: Cron setup
+      minute: "*/2"
+      user: devops
+      job: "logger 'ex294 is running'"

@@ -1,0 +1,21 @@
+---
+- name: set facts to get controler ip 
+  hosts: rhel8,rhel9
+  become: no
+  pre_tasks:
+    - name: set
+      set_fact:
+        controllerIP: "{{ ansible_facts['env']['SSH_CLIENT'].split() | first }}"
+   #  - name: 
+   #    debug:
+   #      msg: "{{ cip }}"
+- name: setup http
+  hosts: rhel8,rhel9
+  roles:
+    - apache
+  post_tasks:
+    - name:
+      uri:
+        url: http://{{ inventory_hostname }}
+        return_content: true
+        status_code: 200        
